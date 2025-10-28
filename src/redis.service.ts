@@ -10,7 +10,7 @@ interface RedisConfig {
   maxRetriesPerRequest: number;
   connectTimeout: number;
   lazyConnect: boolean;
-  tls: any;
+  tls?: any;
 }
 
 @Injectable()
@@ -22,14 +22,16 @@ export class RedisService implements OnModuleDestroy {
       host: getEnv("REDIS_HOST") || "localhost",
       port: Number(getEnv("REDIS_PORT") || 6379),
       db: Number(getEnv("REDIS_DB") || 0),
-      password: getEnv("REDIS_PASSWORD"),
       maxRetriesPerRequest: 3,
       connectTimeout: 10000,
       lazyConnect: true,
-      tls: getEnv("REDIS_TLS") ? {} : undefined,
-      ...(getEnv("REDIS_TLS") && { rejectUnauthorized: false }),
+      // tls: getEnv("REDIS_TLS") ? {} : undefined,
+      // ...(getEnv("REDIS_TLS") && { rejectUnauthorized: false }),
     };
 
+    if (getEnv("REDIS_PASSWORD")) {
+      config.password = getEnv("REDIS_PASSWORD");
+    }
     this.client = new Redis(config);
 
     this.client.on("error", (err: Error) => {

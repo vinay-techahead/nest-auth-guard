@@ -7,7 +7,6 @@ import {
 import { Reflector } from "@nestjs/core";
 import { JwtStrategy } from "./jwt.strategy";
 import { HeaderStrategy } from "./header.strategy";
-import { getEnv } from "./env";
 import { RedisService } from "./redis.service";
 import { OPTIONAL_JWT } from "./decorator/optional-jwt.decorator";
 
@@ -17,8 +16,6 @@ export class AuthGuard implements CanActivate {
   private redisService: RedisService;
 
   constructor(private reflector: Reflector) {
-    const environment = getEnv("AUTH_ENV");
-    const isLocal = environment === "local";
     this.strategy = new JwtStrategy();
     this.redisService = new RedisService();
   }
@@ -31,7 +28,6 @@ export class AuthGuard implements CanActivate {
         context.getClass(),
       ]);
     }
-    console.log("isOptional:", isOptional);
     const request = context.switchToHttp().getRequest();
     try {
       const user = await this.strategy.validateRequest(request, isOptional);
@@ -50,10 +46,7 @@ export class AuthGuard implements CanActivate {
         request.user = {
           ...user,
           userId: userData.userId,
-          userType: userData.userType,
-          ...(userData.userType === "RETAILER" && {
-            retailerId: userData.retailerId,
-          }),
+          userType: userData?.userType,
         };
       } else {
         // If no Redis data found, throw an error

@@ -1,4 +1,4 @@
-# auth0-guard
+# nest-auth-guard
 
 A reusable NestJS Auth guard for validating JWT tokens locally or trusting API Gateway headers in production. This guard automatically switches behavior based on the `NODE_ENV` environment variable.
 
@@ -6,7 +6,7 @@ A reusable NestJS Auth guard for validating JWT tokens locally or trusting API G
 
 ## 📦 Features
 
-- ✅ Auth0 JWT validation when running locally
+- ✅ Auth JWT validation when running locally
 - ✅ API Gateway passthrough validation in production (via trusted headers)
 - ✅ Works with Bearer tokens
 - ✅ Lightweight and configurable
